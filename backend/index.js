@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express")
 const app = express()
 const Note = require("./models/note")
@@ -14,36 +15,6 @@ app.use(express.json())
 app.use(requestLogger)
 app.use(express.static("dist"))
 
-const generateId = () => {
-  const maxID = notes.length > 0
-  ? Math.max(...notes.map(n => Number(n.id)))
-  : 0
-
-  return String(maxID + 1)
-}
-
-let notes = [
-    {
-      id: "1",
-      content: "HTML is easy",
-      important: true
-    },
-    {
-      id: "2",
-      content: "Browser can execute only JavaScript",
-      important: false
-    },
-    {
-      id: "3",
-      content: "GET and POST are the most important methods of HTTP protocol",
-      important: true
-    }
-  ]
-
-app.get("/", (request, response) => {
-  response.send("<h1>Hello World!</h1>")
-})
-
 app.get("/api/notes", (request, response) => {
   Note.find({}).then(notes => {
     response.json(notes)
@@ -51,15 +22,9 @@ app.get("/api/notes", (request, response) => {
 })
 
 app.get("/api/notes/:id", (req, res) => {
-  const id = req.params.id
-  const note = notes.find(note => note.id === id)
-  
-  if (note) {
+  Note.findById(req.params.id).then(note => {
     res.json(note)
-  } else {
-    res.statusMessage = "ID does not exist."
-    res.status(404).end()
-  }
+  })
 })
 
 app.delete("/api/notes/:id", (req, res) => {
@@ -77,23 +42,23 @@ app.post("/api/notes", (req, res) => {
     })
   }
 
-  const note = {
+  const note = new Note({
     "content": body.content,
     "important": body.important || false,
-    "id": generateId()
-  }
+  })
 
-  const unknownEndpoint = (req, res) => {
-    express.res.status(404).send({ error: "unknown endpoint" })
-  }
-
-  app.use(unknownEndpoint)
-
-  notes = notes.concat(note)
-  res.json(note)
+  note.save().then(savedNote => {
+    res.json(savedNote)
+  })
 })
 
-const PORT = process.env.PORT || 3001
+const unknownEndpoint = (req, res) => {
+  express.res.status(404).send({ error: "unknown endpoint" })
+}
+
+app.use(unknownEndpoint)
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
