@@ -33,7 +33,7 @@ const App = () => {
     noteService
       .create(noteObject)
       .then(response => {
-        setNotes(notes.concat(response.data))
+        setNotes(notes.concat(response))
         setNewNote("")
       })
   }
@@ -50,7 +50,9 @@ const App = () => {
     noteService
       .update(id, changedNote)
       .then(response => {
-        setNotes(notes.map(n => n.id === id ? response.data : n))
+        setNotes(notes.map(n => {
+          return n.id === response.id ? response : n
+        }))
       })
       .catch(error => {
         setErrorMessage(
