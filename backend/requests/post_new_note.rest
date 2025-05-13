@@ -1,9 +1,11 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY4MjMwNDEyMDJhMTNmOTVmM2EyMWM2MiIsImlhdCI6MTc0NzE0NzAwM30.6LyeQ1OagoEfgyGWDEvzN4AlOv6ASv6zS6xOS5-7CJE
 
 {
-    "content": "test note",
-    "important": true
+    "content": "Web tokens are used for user authentication",
+    "important": true,
+    "user": "6823041202a13f95f3a21c62"
 }
 
 ###
