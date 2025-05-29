@@ -1,4 +1,3 @@
-const { MongoServerError } = require('mongodb')
 const logger = require('./logger')
 
 const requestLogger = (request, response, next) => {
